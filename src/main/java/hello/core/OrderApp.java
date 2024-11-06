@@ -19,7 +19,7 @@ public class OrderApp {
         Member member = new Member(memberId, "memberA", Grade.VIP);
         memberService.join(member);
 
-        Order order = orderService.createOrder(memberId, "itemA", 10000);
+        Order order = orderService.createOrder(memberId, "itemA", 20000);
 
         // order 객체가 toString으로 출력됨.
         System.out.println("order = " + order);
