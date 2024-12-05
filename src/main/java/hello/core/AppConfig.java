@@ -17,7 +17,18 @@ import org.springframework.context.annotation.Configuration;
  애플리케이션의 전체 동작 방식을 구성하기 위해 구현 객체를 생성하고 연결하는 책임을 가지는 별도의 설정 클래스 */
 // 스프링으로 전환: @Configuration, @Bean 을 붙여줌
 @Configuration // Application의 설정/구성 정보를 담당함
-public class AppConfig {
+public class  AppConfig {
+
+    // memberService, orderService 빈을 만들다보면 repository의 생성자를 두 번 호출하는 것인데, 싱글톤 패턴이 유지될까??
+    //@Bean memberService -> new MemoryMemberRepository()
+    //@Bean orderService -> new MemoryMemberRepository()
+
+    // call AppConfig.memberService
+    // call AppConfig.memberRepository
+    // call AppConfig.memberRepository
+    // call AppConfig.orderService
+    // call AppConfig.memberRepository
+    // 빈 생성 코드를 보면 memberRepository 가 세 번 호출될 것 같지만 한 번만 호출됨.
 
      /*
      리팩토링: 역할이 더 잘 드러나도록 리팩토링
@@ -28,16 +39,21 @@ public class AppConfig {
      >> 역할을 명확하게 한 눈에 볼 수 있을 뿐만 아니라 역할에 사용되는 구현체가 바뀔 때 코드 수정도 줄어든다. */
     @Bean // 스프링 컨테이너에 등록
     public MemberService memberService(){
+        System.out.println("call AppConfig.memberService");
         return new MemberServiceImpl(memberRepository());
     }
 
+    // public static~ 에서 public~ 으로 변경
+    // @Configuration 내부의 @Bean 메소드에 static이 사용되면 싱글톤 패턴이 적용되지 않음.
     @Bean
-    public static MemoryMemberRepository memberRepository() {
+    public MemoryMemberRepository memberRepository() {
+        System.out.println("call AppConfig.memberRepository");
         return new MemoryMemberRepository();
     }
 
     @Bean
     public OrderService orderService(){
+        System.out.println("call AppConfig.orderService");
         return new OrderServiceImpl(memberRepository(), discountPolicy());
     }
 
