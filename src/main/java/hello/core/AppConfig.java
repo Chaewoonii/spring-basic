@@ -16,7 +16,7 @@ import org.springframework.context.annotation.Configuration;
  배우는 너무 많은 책임을 지게 되고, 별도의 기획자가 필요하다. 애플리케이션도 마찬가지. (책임 분리)
  애플리케이션의 전체 동작 방식을 구성하기 위해 구현 객체를 생성하고 연결하는 책임을 가지는 별도의 설정 클래스 */
 // 스프링으로 전환: @Configuration, @Bean 을 붙여줌
-@Configuration // Application의 설정/구성 정보를 담당함
+@Configuration // Application의 설정/구성 정보를 담당함. 이 어노테이션이 없어도 bean을 생성할 수 있지만 싱글톤 보장 X
 public class  AppConfig {
 
     // memberService, orderService 빈을 만들다보면 repository의 생성자를 두 번 호출하는 것인데, 싱글톤 패턴이 유지될까??
