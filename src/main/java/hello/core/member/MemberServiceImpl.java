@@ -1,5 +1,9 @@
 package hello.core.member;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
+@Component
 public class MemberServiceImpl implements MemberService {
 
     // MemberRepository는 인터페이스이며, 구현체를 필요로 함.
@@ -10,6 +14,7 @@ public class MemberServiceImpl implements MemberService {
     //-> 객체 생성부(new~)를 지우고 생성자를 만든다: memberRepository에 어떤 구현체가 들어갈 지는 객체 생성 시 결정
     private final MemberRepository memberRepository;
 
+    @Autowired
     public MemberServiceImpl(MemberRepository memberRepository) {
         this.memberRepository = memberRepository;
     }
