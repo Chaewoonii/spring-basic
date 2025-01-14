@@ -1,5 +1,6 @@
 package hello.core.order;
 
+import hello.core.annotation.MainDiscountPolicy;
 import hello.core.discount.DiscountPolicy;
 import hello.core.member.Member;
 import hello.core.member.MemberRepository;
@@ -7,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
+//@RequiredArgsConstructor // 필수 값을 파라미터로 받는 생성자 만들어줌
 public class OrderServiceImpl implements OrderService{
 
 //    private final MemberRepository memberRepository = new MemoryMemberRepository();
@@ -35,12 +37,20 @@ public class OrderServiceImpl implements OrderService{
      */
 
     //    생성자 주입 패턴
-    // 생성자가 딱 1개만 있으면 @Autowired 를 생략해도 의존관계 자동 주입
+    // final 키워드: "상수"이므로 값이 불변, 인스턴스 생성 시 반드시 값을 주입하도록 강제
     private final MemberRepository memberRepository;
     private final DiscountPolicy discountPolicy;
 
-    @Autowired
-    public OrderServiceImpl(MemberRepository memberRepository, DiscountPolicy discountPolicy) {
+/*     @Qualifier
+     - 사용방식: 구현 클래스에 @Qualifier 어노테이션을 붙이고, 이름을 준다 -> @Qualifier("mainDiscountPolicy")
+                호출부(생성자) 파라미터에 @Qualifier 어노테이션을 붙인다
+                예시:  public OrderServiceImpl(MemberRepository memberRepository, @Qualifier("mainDiscountPolicy") DiscountPolicy discountPolicy){...}
+     - DiscountPolicy 는 구현체가 Fix, Rate 두개이다. 둘 다 @Component 를 붙여 Bean으로 만들면,
+     - 스프링 컨테이너가 관리하는 빈 중 DiscountPolicy 타입이 두 개 이므로 어떤 것을 주입시켜야할지 알 수 없다 : Error 발생
+     - @Qualifier 를 통해 어느 구현체를 주입할지 결정할 수 있다.
+     */
+    @Autowired // 생성자가 딱 1개만 있으면 @Autowired 생략가능. 의존관계 자동 주입
+    public OrderServiceImpl(MemberRepository memberRepository, @MainDiscountPolicy DiscountPolicy discountPolicy) {
         this.memberRepository = memberRepository;
         this.discountPolicy = discountPolicy;
     }
@@ -56,7 +66,7 @@ public class OrderServiceImpl implements OrderService{
         return new Order(memberId, itemName, itemPrice, discoutnPrice);
     }
 
-    // 테스트용
+    // 테스트용 | lombok, @Getter로 대체
     public MemberRepository getMemberRepository() {
         return memberRepository;
     }
